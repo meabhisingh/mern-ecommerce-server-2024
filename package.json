@@ -2,24 +2,25 @@
   "name": "ecommerce-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/app.js",
   "type": "module",
   "scripts": {
     "start": "node dist/app.js",
     "build": "tsc",
     "watch": "tsc -w",
-    "dev": "nodemon dist/app.js"
+    "dev": "npx tsx watch ./src/app.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "ioredis": "^5.4.1",
     "mongoose": "^8.0.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "node-cache": "^5.1.2",
     "stripe": "^14.5.0",
     "uuid": "^9.0.1",
     "validator": "^13.11.0"
@@ -33,7 +34,7 @@
     "@types/node": "^20.8.10",
     "@types/uuid": "^9.0.6",
     "@types/validator": "^13.11.5",
-    "nodemon": "^3.0.1",
+    "tsx": "^4.15.6",
     "typescript": "^5.2.2"
   }
 }
