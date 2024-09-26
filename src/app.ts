@@ -22,6 +22,7 @@ const port = process.env.PORT || 4000;
 const mongoURI = process.env.MONGO_URI || "";
 const stripeKey = process.env.STRIPE_KEY || "";
 const redisURI = process.env.REDIS_URI || "";
+const clientURL = process.env.CLIENT_URL || "";
 export const redisTTL = process.env.REDIS_TTL || 60 * 60 * 4;
 
 connectDB(mongoURI);
@@ -41,7 +42,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL!],
+    origin: [clientURL],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

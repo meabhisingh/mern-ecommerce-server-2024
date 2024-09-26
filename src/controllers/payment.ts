@@ -1,16 +1,52 @@
 import { stripe } from "../app.js";
 import { TryCatch } from "../middlewares/error.js";
 import { Coupon } from "../models/coupon.js";
+import { User } from "../models/user.js";
+import { OrderItemType, ShippingInfoType } from "../types/types.js";
 import ErrorHandler from "../utils/utility-class.js";
 
 export const createPaymentIntent = TryCatch(async (req, res, next) => {
-  const { amount } = req.body;
+  const { id } = req.query;
 
-  if (!amount) return next(new ErrorHandler("Please enter amount", 400));
+  const user = await User.findById(id).select("name");
+
+  if (!user) return next(new ErrorHandler("Please login first", 401));
+
+  const {
+    items,
+    shippingInfo,
+  }: {
+    items: OrderItemType[];
+    shippingInfo: ShippingInfoType;
+  } = req.body;
+
+  const subtotal = items.reduce(
+    (prev, curr) => curr.price * curr.quantity + prev,
+    0
+  );
+
+  const tax = subtotal * 0.18;
+
+  const shipping = subtotal > 1000 ? 0 : 200;
+
+  const total = Math.floor(subtotal + tax + shipping);
+
+  if (!items) return next(new ErrorHandler("Please send items", 400));
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: Number(amount) * 100,
+    amount: total * 100,
     currency: "inr",
+    description: "MERN-Ecommerce",
+    shipping: {
+      name: user.name,
+      address: {
+        line1: shippingInfo.address,
+        postal_code: shippingInfo.pinCode.toString(),
+        city: shippingInfo.city,
+        state: shippingInfo.state,
+        country: shippingInfo.country,
+      },
+    },
   });
 
   return res.status(201).json({
