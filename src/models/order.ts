@@ -1,36 +1,68 @@
-import mongoose from "mongoose";
+import { model, Types, Schema, Document } from "mongoose";
 
-const schema = new mongoose.Schema(
+interface IShippingInfo {
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  pinCode: number;
+}
+
+interface IOrderItem {
+  name: string;
+  photo: string;
+  price: number;
+  quantity: number;
+  productId: Types.ObjectId;
+}
+
+interface IOrder extends Document {
+  shippingInfo: IShippingInfo;
+  user: Types.ObjectId;
+  subtotal: number;
+  tax: number;
+  shippingCharges: number;
+  discount: number;
+  total: number;
+  status: "Processing" | "Shipped" | "Delivered";
+  orderItems: IOrderItem[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const orderSchema: Schema<IOrder> = new Schema(
   {
     shippingInfo: {
       address: {
         type: String,
         required: true,
+        trim: true,
       },
       city: {
         type: String,
         required: true,
+        trim: true,
       },
       state: {
         type: String,
         required: true,
+        trim: true,
       },
       country: {
         type: String,
         required: true,
+        trim: true,
       },
       pinCode: {
         type: Number,
         required: true,
       },
     },
-
     user: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
     subtotal: {
       type: Number,
       required: true,
@@ -56,7 +88,6 @@ const schema = new mongoose.Schema(
       enum: ["Processing", "Shipped", "Delivered"],
       default: "Processing",
     },
-
     orderItems: [
       {
         name: String,
@@ -64,7 +95,7 @@ const schema = new mongoose.Schema(
         price: Number,
         quantity: Number,
         productId: {
-          type: mongoose.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: "Product",
         },
       },
@@ -75,4 +106,4 @@ const schema = new mongoose.Schema(
   }
 );
 
-export const Order = mongoose.model("Order", schema);
+export const Order = model<IOrder>("Order", orderSchema);

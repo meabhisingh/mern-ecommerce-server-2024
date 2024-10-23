@@ -8,6 +8,8 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  console.error(err);
+
   err.message ||= "Internal Server Error";
   err.statusCode ||= 500;
 
@@ -22,5 +24,5 @@ export const errorMiddleware = (
 export const TryCatch =
   (func: ControllerType) =>
   (req: Request, res: Response, next: NextFunction) => {
-    return Promise.resolve(func(req, res, next)).catch(next);
+    return Promise.resolve(func(req, res, next)).catch((err) => next(err));
   };

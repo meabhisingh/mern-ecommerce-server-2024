@@ -1,6 +1,15 @@
-import mongoose from "mongoose";
+import { model, Types, Schema, Document } from "mongoose";
 
-const schema = new mongoose.Schema(
+interface IReview extends Document {
+  comment: string;
+  rating: number;
+  user: Types.ObjectId;
+  product: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const reviewSchema: Schema<IReview> = new Schema(
   {
     comment: {
       type: String,
@@ -13,12 +22,12 @@ const schema = new mongoose.Schema(
       max: [5, "Rating must not be more than 5"],
     },
     user: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     product: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Product",
       required: true,
     },
@@ -26,4 +35,4 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const Review = mongoose.model("Review", schema);
+export const Review = model<IReview>("Review", reviewSchema);

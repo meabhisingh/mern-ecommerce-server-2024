@@ -1,6 +1,24 @@
-import mongoose from "mongoose";
+import { model, Schema, Document } from "mongoose";
 
-const schema = new mongoose.Schema(
+interface IPhoto {
+  public_id: string;
+  url: string;
+}
+
+interface IProduct extends Document {
+  name: string;
+  photos: IPhoto[];
+  price: number;
+  stock: number;
+  category: string;
+  description: string;
+  ratings: number;
+  numOfReviews: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const productSchema: Schema<IProduct> = new Schema(
   {
     name: {
       type: String,
@@ -52,4 +70,4 @@ const schema = new mongoose.Schema(
   }
 );
 
-export const Product = mongoose.model("Product", schema);
+export const Product = model<IProduct>("Product", productSchema);
