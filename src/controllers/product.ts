@@ -228,7 +228,7 @@ export const getAllProducts = TryCatch(
         };
 
       if (category) baseQuery.category = category;
-
+      console.log(baseQuery);
       const productsPromise = Product.find(baseQuery)
         .sort(sort && { price: sort === "asc" ? 1 : -1 })
         .limit(limit)
